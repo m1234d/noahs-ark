@@ -1,0 +1,66 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#map_canvas {
+    height: 100%;
+    width: 100%;
+    /* z-index: -1; */
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* width: 100%; */
+}
+
+.overlay {
+    position: relative;
+    z-index: 10;
+}
+
+.drop {
+    position: absolute;
+    left: 210px;
+    top: 12px;
+}
+
+.warn {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+}
+
+/* Google style search bar */
+.bar{
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 575px;
+    height: 46px;
+    border-radius:30px;
+    background-color: white;
+    box-shadow: 1px 1px 3px 1px #929292;
+}
+.bar:hover{
+    box-shadow: 1px 1px 8px 1px #727272;
+}
+.bar:focus-within{
+    box-shadow: 1px 1px 8px 1px #727272;
+    outline:none;
+}
+.searchbar{
+    height:45px;
+    border:none;
+    width:470px;
+    font-size:16px;
+    outline: none;
+    margin-left:10px;
+    margin-right:10px;
+}
+.searchIcon{
+    margin-left: 20px; 
+    margin-bottom: 3px;
+}
