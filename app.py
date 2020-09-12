@@ -32,6 +32,8 @@ def hello_world():
 @app.route('/getFloodMap')
 def get_flood_map():
     global modelAuto
+    if modelAuto == None:
+        server_init()
     westCoord = request.args.get('lat')
     northCoord = request.args.get('lng')
     locStr = westCoord + "," + northCoord
@@ -164,6 +166,6 @@ def getLocationImage(locStr):
     return i
 
 if __name__ == "__main__":
-    train()
-else:
+    #train()
     server_init()
+    app.run(host='0.0.0.0')
