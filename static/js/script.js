@@ -4,6 +4,7 @@ var showingWater;
 var tileNEX;
 var geocoder;
 var overlays = [];
+var elevator;
 
 // const bounds = new google.maps.LatLngBounds(
 //   new google.maps.LatLng(62.281819, -150.287132),
@@ -23,7 +24,9 @@ function initialize() {
     };
     map = new google.maps.Map(document.getElementById('map_canvas'),
         mapOptions);
-    geocoder = new google.maps.Geocoder()
+    geocoder = new google.maps.Geocoder();
+    elevator = new google.maps.ElevationService;
+    displayLocationElevation({lat: 30.502872, lng: -86.450075}, elevator)
     tileNEX = new google.maps.ImageMapType({
         getTileUrl: function(tile, zoom) {
             return "https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913/" + zoom + "/" + tile.x + "/" + tile.y +".png?"+ (new Date()).getTime(); 
@@ -91,6 +94,7 @@ function toggleWaterOverlay(reset) {
       var latLng = map.getCenter();
       var lat = latLng.lat();
       var lng = latLng.lng();
+      displayLocationElevation({lat: lat, lng: lng}, elevator)
       const latShift = (0.85/69.1)*2;
       const lngShift = (0.84/69.1)*2;
       for (let i = -1; i<2; i++) {
@@ -238,6 +242,49 @@ class USGSOverlay extends google.maps.OverlayView {
   }
 }
 
+
+function displayLocationElevation(location, elevator) {
+  // Initiate the location request
+  elevator.getElevationForLocations({
+    'locations': [location]
+  }, function(results, status) {
+    if (status === 'OK') {
+      // Retrieve the first result
+      if (results[0]) {
+        // Open the infowindow indicating the elevation at the clicked position.
+        var height = results[0].elevation;
+        var warn_color = document.getElementById("warnSign");
+        warn_color.classList.remove("red");
+        warn_color.classList.remove("yellow");
+        warn_color.classList.remove("green");
+        warn_color.classList.remove("orange");
+        warn_color.classList.remove("grey");
+        warn_color.classList.remove("white");
+        if (height < 10) {
+          warn_color.classList.add("red");
+          warn_color.innerText = "Danger!";
+        } else if (height < 20) {
+          warn_color.classList.add("orange");
+          warn_color.innerText = "High risk";
+        } else if (height < 30) {
+          warn_color.classList.add("yellow");
+          warn_color.innerText = "Medium Risk";
+        } else if (height < 40) {
+          warn_color.classList.add("green");
+          warn_color.innerText = "Low Risk";
+        } else {
+          warn_color.classList.add("grey");
+          warn_color.innerText = "No Risk";
+        }
+      } else {
+        warn_color.classList.add("white");
+        warn_color.innerText = "No data";
+      }
+    } else {
+      alert('elevation was not successful for the following reason: ' + status);
+    }
+  });
+}
 
 // Run when page loads:
 google.maps.event.addDomListener(window, 'load', initialize);
