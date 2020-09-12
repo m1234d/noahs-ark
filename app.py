@@ -120,7 +120,7 @@ def getImages():
             northCoord = coords[1][:-5]
             locStr = getLocationString(westCoord, northCoord)
             normalImage= np.asarray(getLocationImage(locStr).convert('RGB').resize((256, 256)))
-            floodImage = np.asarray(Image.open("images/" + filename).resize((256, 256)).convert('RGB'))
+            floodImage = np.asarray(Image.open("./images/" + filename).resize((256, 256)).convert('RGB'))
             #Image.fromarray(normalImage).show()
             newImage = floodImage - normalImage
             normalImages.append(normalImage)
