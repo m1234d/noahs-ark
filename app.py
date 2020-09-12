@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template, send_file
+from flask import render_template, send_file, request
 
 import matplotlib.pyplot as plt
 import os
@@ -32,7 +32,10 @@ def hello_world():
 @app.route('/getFloodMap')
 def get_flood_map():
     global modelAuto
-    locStr = "40.66841,-74.081099"
+    westCoord = request.args.get('lat')
+    northCoord = request.args.get('lng')
+    locStr = westCoord + "," + northCoord
+    #locStr = "40.66841,-74.081099"
     image = np.asarray(getLocationImage(locStr).convert('RGB').resize((256, 256)))
     img2 = np.array([image]).astype('float32') / 255
     res = modelAuto.predict(img2)
