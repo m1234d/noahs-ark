@@ -23,9 +23,9 @@
 
       <!-- Dropdown Structure -->
       <ul id='locations' class='dropdown-content'>
-        <li><a href="#!">one</a></li>
-        <li><a href="#!">two</a></li>
-        <li><a href="#!">three</a></li>
+        <li><a onclick="document.getElementById('addressSearch').value = '9.08936 -79.9349'; setLatLng()">Panama</a></li>
+        <li><a onclick="document.getElementById('addressSearch').value = '25.66377 -80.2823'; setLatLng()">Florida</a></li>
+        <li><a onclick="document.getElementById('addressSearch').value = '29.77868 -95.08637'; setLatLng()">Texas</a></li>
       </ul>
 
       <!-- Search Bar -->
@@ -50,7 +50,7 @@
             <i class="material-icons" id="toggleCloud"></i></a>
       </div>
       <div class="flood tooltipped" data-position="left" data-tooltip="Toggle Flood Map">
-        <a class="btn-floating btn-large blue" onclick="toggleWaterOverlay()">
+        <a class="btn-floating btn-large blue" onclick="toggleWaterOverlay(false)">
             <i class="material-icons" id="toggleWater"></i></a>
       </div>
 
