@@ -41,12 +41,12 @@ def ai(normalImage, newImage, testImage):
     x = MaxPooling2D((2, 2), padding='same')(x)
     x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
     x = MaxPooling2D((2, 2), padding='same')(x)
-    encoded = Dense(512, activation='relu')(x)
+    encoded = Dense(16, activation='relu')(x)
 
     # (28, 28, 1)
     # at this point the representation is (4, 4, 8) i.e. 128-dimensional
 
-    x = Dense(512, activation='relu')(encoded)
+    x = Dense(8, activation='relu')(encoded)
     x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
     x = UpSampling2D((2, 2))(x)
     x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
@@ -59,8 +59,8 @@ def ai(normalImage, newImage, testImage):
     autoencoder.compile(optimizer=opt, loss='mse')
 
 
-    x_train = np.array(normalImage * 10)
-    y_train = np.array(newImage * 10)
+    x_train = np.array(normalImage)
+    y_train = np.array(newImage)
     x_test = np.array(testImage)
     x_train = x_train.astype('float32') / 255.
     x_test = x_test.astype('float32') / 255.
