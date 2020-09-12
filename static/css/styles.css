@@ -27,6 +27,12 @@ html, body {
 
 .warn {
     position: absolute;
+    right: 100px;
+    top: 12px;
+}
+
+.logo {
+    position: absolute;
     right: 12px;
     top: 12px;
 }

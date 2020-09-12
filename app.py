@@ -143,4 +143,4 @@ def getLocationImage(locStr):
     return i
 
 #ai()
-getImages()
+# getImages()

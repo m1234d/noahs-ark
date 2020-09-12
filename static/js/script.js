@@ -98,6 +98,7 @@ function setLatLng() {
             map.setCenter(results[0].geometry.location);
             map.setZoom(12);
             console.log("Lat/Long:" + lat + ", " + lng);
+            // toggleWaterOverlay()
         } else {
             alert('Geocode was not successful for the following reason: ' + status);
         }
@@ -207,22 +208,24 @@ class USGSOverlay extends google.maps.OverlayView {
 }
 
 
-
-
-
 // Run when page loads:
 google.maps.event.addDomListener(window, 'load', initialize);
 document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.fixed-action-btn');
     var instances = M.FloatingActionButton.init(elems, {
-      direction: 'top',
+      direction: 'bottom',
       hoverEnabled: false
     });
     document.getElementById("toggleCloud").innerText = "cloud_queue";
     document.getElementById("toggleWater").innerText = "invert_colors";
 
+    instances[0].open();
+
     var elemsDrop = document.querySelectorAll('.dropdown-trigger');
     var instancesDrop = M.Dropdown.init(elemsDrop, {});
+
+    var elemsOverlay = document.querySelectorAll('.tooltipped');
+    var instancesOverlay = M.Tooltip.init(elemsOverlay, {});
     
 });
 $("#addressForm").submit(function(e) {

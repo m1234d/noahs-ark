@@ -40,14 +40,23 @@
       <!-- Danger warning -->
       <a class="btn red warn" id="warnSign">Danger!</a>
 
+      <!-- Logo -->
+      <img class="logo" src="/static/images/NoahsArkLogo.png" width="75px" height="75px">
+
       <!-- Overlay button tray -->
       <div class="fixed-action-btn">
-        <a class="btn-floating btn-large red">
+        <a class="btn-floating btn-large red tooltipped" data-position="left" data-tooltip="Overlays">
           <i class="large material-icons">menu</i>
         </a>
         <ul>
-          <li><a class="btn-floating blue" onclick="toggleWaterOverlay()"><i class="material-icons" id="toggleWater"></i></a></li>
-          <li><a class="btn-floating green" onclick="toggleCloudOverlay()"><i class="material-icons" id="toggleCloud"></i></a></li>
+          <li><a class="btn-floating btn-large blue tooltipped" 
+            data-position="left" data-tooltip="Toggle Flood Map" 
+            onclick="toggleWaterOverlay()">
+            <i class="material-icons" id="toggleWater"></i></a></li>
+          <li><a class="btn-floating btn-large green tooltipped" 
+            data-position="left" data-tooltip="Toggle Weather Map" 
+            onclick="toggleCloudOverlay()">
+            <i class="material-icons" id="toggleCloud"></i></a></li>
         </ul>
       </div>
 

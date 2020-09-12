@@ -9,7 +9,6 @@ async-timeout==3.0.1
 asyncclick==7.0.9
 attrs==19.3.0
 av==8.0.2
-battlehack20==1.0.4
 beautifulsoup4==4.9.0
 cachetools==4.1.1
 certifi==2020.4.5.1
