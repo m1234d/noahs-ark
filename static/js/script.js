@@ -77,7 +77,13 @@ function toggleWaterOverlay() {
       document.getElementById("toggleWater").innerText = "invert_colors";
   } else {
       var latLng = map.getCenter();
+      var lat = latLng.lat();
+      var lng = latLng.lng();
       // call neural network here to get the image. 
+      fetch("/getFloodMap?lat="+lat+"&lng="+lng).then(response => response.blob()).then(image => {
+        var imageUrl = URL.createObjectURL(image);
+        document.getElementById("test").src = imageUrl
+      });
       overlay = new USGSOverlay(bounds, image);
       overlay.setMap(map);
       showingWater = true;
