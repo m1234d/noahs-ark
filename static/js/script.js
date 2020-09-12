@@ -5,19 +5,19 @@ var tileNEX;
 var geocoder;
 var overlay;
 
-const bounds = new google.maps.LatLngBounds(
-  new google.maps.LatLng(62.281819, -150.287132),
-  new google.maps.LatLng(62.400471, -150.005608)
-);
-// The photograph is courtesy of the U.S. Geological Survey.
-let image = "https://developers.google.com/maps/documentation/javascript/";
-image += "examples/full/images/talkeetna.png";
+// const bounds = new google.maps.LatLngBounds(
+//   new google.maps.LatLng(62.281819, -150.287132),
+//   new google.maps.LatLng(62.400471, -150.005608)
+// );
+// // The photograph is courtesy of the U.S. Geological Survey.
+// let image = "https://developers.google.com/maps/documentation/javascript/";
+// image += "examples/full/images/talkeetna.png";
 
 
 function initialize() {
     var mapOptions = {
         zoom: 11,
-        center: new google.maps.LatLng(62.323907, -150.109291),
+        center: new google.maps.LatLng(30.502872, -86.450075),
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         fullscreenControl: false
     };
@@ -79,15 +79,20 @@ function toggleWaterOverlay() {
       var latLng = map.getCenter();
       var lat = latLng.lat();
       var lng = latLng.lng();
+      // console.log("LAt, lng:" + lat + ", " +lng)
       // call neural network here to get the image. 
       fetch("/getFloodMap?lat="+lat+"&lng="+lng).then(response => response.blob()).then(image => {
         var imageUrl = URL.createObjectURL(image);
-        document.getElementById("test").src = imageUrl
+        // document.getElementById("test").src = imageUrl
+        var topLeft = new google.maps.LatLng(lat-(0.85/69.1), lng-(0.84/69.1))
+        var bottomRight = new google.maps.LatLng(lat+(0.85/69.1), lng+(0.84/69.1))
+        var bounds = new google.maps.LatLngBounds(topLeft, bottomRight);
+        overlay = new USGSOverlay(bounds, imageUrl);
+        overlay.setMap(map);
+        map.setZoom(15);
+        showingWater = true;
+        document.getElementById("toggleWater").innerText = "invert_colors_off";
       });
-      overlay = new USGSOverlay(bounds, image);
-      overlay.setMap(map);
-      showingWater = true;
-      document.getElementById("toggleWater").innerText = "invert_colors_off";
   }
 }
 
@@ -102,7 +107,6 @@ function setLatLng() {
             var lng = results[0].geometry.location.lng();
             // createMarker(results[0].geometry.location);
             map.setCenter(results[0].geometry.location);
-            map.setZoom(12);
             console.log("Lat/Long:" + lat + ", " + lng);
             // toggleWaterOverlay()
         } else {
