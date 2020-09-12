@@ -24,7 +24,7 @@ import tifffile
 
 app = Flask(__name__, template_folder='./static')
 modelAuto = None
-sz = (256,256,3)
+sz = (512,512,3)
 @app.route('/')
 def hello_world():
     return render_template('index.html')
@@ -36,7 +36,7 @@ def get_flood_map():
     northCoord = request.args.get('lng')
     locStr = westCoord + "," + northCoord
     #locStr = "40.66841,-74.081099"
-    image = np.asarray(getLocationImage(locStr).convert('RGB').resize((256, 256)))
+    image = np.asarray(getLocationImage(locStr).convert('RGB').resize((sz[0], sz[1])))
     img2 = np.array([image]).astype('float32') / 255
     res = modelAuto.predict(img2)
     res2 = (res[0].reshape(sz) * 255.0).astype('uint8')
@@ -140,18 +140,18 @@ def train():
             westCoord = coords[0]
             northCoord = coords[1][:-5]
             locStr = getLocationString(westCoord, northCoord)
-            normalImage= np.asarray(getLocationImage(locStr).convert('RGB').resize((256, 256)))
-            floodImage = np.asarray(Image.open("./images/" + filename).resize((256, 256)).convert('RGB'))
+            normalImage= np.asarray(getLocationImage(locStr).convert('RGB').resize((sz[0], sz[1])))
+            floodImage = np.asarray(Image.open("./images/" + filename).resize((sz[0],sz[1])).convert('RGB'))
             #Image.fromarray(normalImage).show()
             newImage = floodImage - normalImage
             normalImages.append(normalImage)
             newImages.append(newImage)
 
-    testImages = [np.asarray(getLocationImage("40.66841,-74.081099").convert('RGB').resize((256, 256)))]
-    testImages.append(np.asarray(getLocationImage("25.1795,-80.3840").convert('RGB').resize((256, 256))))
-    testImages.append(np.asarray(getLocationImage("25.909258, -80.135660").convert('RGB').resize((256, 256))))
-    testImages.append(np.asarray(getLocationImage("38.622988, -90.181813").convert('RGB').resize((256, 256))))
-    testImages.append(np.asarray(getLocationImage("30.145418, -85.665211").convert('RGB').resize((256, 256))))
+    testImages = [np.asarray(getLocationImage("40.66841,-74.081099").convert('RGB').resize((sz[0], sz[1])))]
+    testImages.append(np.asarray(getLocationImage("25.1795,-80.3840").convert('RGB').resize((sz[0], sz[1]))))
+    testImages.append(np.asarray(getLocationImage("25.909258, -80.135660").convert('RGB').resize((sz[0], sz[1]))))
+    testImages.append(np.asarray(getLocationImage("38.622988, -90.181813").convert('RGB').resize((sz[0], sz[1]))))
+    testImages.append(np.asarray(getLocationImage("30.145418, -85.665211").convert('RGB').resize((sz[0], sz[1]))))
     ai(normalImages, newImages, testImages)
 
 
