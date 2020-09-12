@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template
+from flask import render_template, send_file
 
 import matplotlib.pyplot as plt
 import os
@@ -8,7 +8,7 @@ import time
 from datetime import datetime
 import requests
 from PIL import Image
-from io import BytesIO
+from io import BytesIO, StringIO
 
 import tensorflow as tf
 from tensorflow import keras
@@ -23,18 +23,34 @@ from tifffile import imread
 import tifffile
 
 app = Flask(__name__, template_folder='./static')
-
+modelAuto = None
+sz = (256,256,3)
 @app.route('/')
 def hello_world():
     return render_template('index.html')
 
 @app.route('/getFloodMap')
 def get_flood_map():
-    pass
+    global modelAuto
+    locStr = "40.66841,-74.081099"
+    image = np.asarray(getLocationImage(locStr).convert('RGB').resize((256, 256)))
+    img2 = np.array([image]).astype('float32') / 255
+    res = modelAuto.predict(img2)
+    res2 = (res[0].reshape(sz) * 255.0).astype('uint8')
+    newImg = Image.fromarray(res2)
+    return serve_pil_image(newImg)
 
+def serve_pil_image(pil_img):
+    img_io = BytesIO()
+    pil_img.save(img_io, 'JPEG', quality=70)
+    img_io.seek(0)
+    return send_file(img_io, mimetype='image/jpeg')
+
+def server_init():
+    global modelAuto
+    modelAuto = keras.models.load_model('model')
 
 def ai(normalImage, newImage, testImage):
-    sz = (256,256,3)
     input_img = Input(shape=sz)  # adapt this if using `channels_first` image data format
 
     x = Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
@@ -73,6 +89,8 @@ def ai(normalImage, newImage, testImage):
                 batch_size=len(normalImage),
                 shuffle=True)
 
+    autoencoder.save("model")
+
     decoded_imgs = autoencoder.predict(x_test)
 
     n = len(testImage)
@@ -107,7 +125,7 @@ def getLocationString(westCoord, northCoord):
 
     return str(northDec) + ",-" + str(westDec)
 
-def getImages():
+def train():
     normalImages = []
     newImages = []
     #for filename in os.listdir("images"):
@@ -120,7 +138,7 @@ def getImages():
             northCoord = coords[1][:-5]
             locStr = getLocationString(westCoord, northCoord)
             normalImage= np.asarray(getLocationImage(locStr).convert('RGB').resize((256, 256)))
-            floodImage = np.asarray(Image.open("images/" + filename).resize((256, 256)).convert('RGB'))
+            floodImage = np.asarray(Image.open("./images/" + filename).resize((256, 256)).convert('RGB'))
             #Image.fromarray(normalImage).show()
             newImage = floodImage - normalImage
             normalImages.append(normalImage)
@@ -142,5 +160,7 @@ def getLocationImage(locStr):
     i = Image.open(BytesIO(r.content))
     return i
 
-#ai()
-# getImages()
+if __name__ == "__main__":
+    train()
+else:
+    server_init()
