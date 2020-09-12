@@ -72,7 +72,7 @@ def ai(normalImage, newImage, testImage):
 
     decoded_imgs = autoencoder.predict(x_test)
 
-    n = 1
+    n = len(testImage)
     plt.figure(figsize=(20, 4))
     for i in range(n):
         # display original
@@ -108,7 +108,7 @@ def getImages():
     normalImages = []
     newImages = []
     #for filename in os.listdir("images"):
-    for filename in os.listdir("images")[:10]:
+    for filename in os.listdir("images")[:20]:
         if filename.endswith(".tif"): 
             filename2 = filename.split('C')[1]
             coords = filename2.split('w')
@@ -123,6 +123,10 @@ def getImages():
             newImages.append(newImage)
 
     testImages = [np.asarray(getLocationImage("40.66841,-74.081099").convert('RGB').resize((256, 256)))]
+    testImages.append(np.asarray(getLocationImage("25.1795,-80.3840").convert('RGB').resize((256, 256))))
+    testImages.append(np.asarray(getLocationImage("25.909258, -80.135660").convert('RGB').resize((256, 256))))
+    testImages.append(np.asarray(getLocationImage("38.622988, -90.181813").convert('RGB').resize((256, 256))))
+    testImages.append(np.asarray(getLocationImage("30.145418, -85.665211").convert('RGB').resize((256, 256))))
     ai(normalImages, newImages, testImages)
 
 
