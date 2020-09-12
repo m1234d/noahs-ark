@@ -70,3 +70,15 @@ html, body {
     margin-left: 20px; 
     margin-bottom: 3px;
 }
+
+.cloud {
+    position: absolute;
+    right: 20px;
+    top: 100px;
+}
+
+.flood {
+    position: absolute;
+    right: 20px;
+    top: 170px;
+}

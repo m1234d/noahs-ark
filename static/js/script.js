@@ -3,7 +3,7 @@ var showingClouds;
 var showingWater;
 var tileNEX;
 var geocoder;
-var overlay;
+var overlays = [];
 
 // const bounds = new google.maps.LatLngBounds(
 //   new google.maps.LatLng(62.281819, -150.287132),
@@ -66,12 +66,17 @@ function toggleCloudOverlay() {
 }
 
 function toggleWaterOverlay() {
-  if (overlay != null) {
-    overlay.toggle()
+  if (overlays.length>0) {
+    for (let i = 0; i < overlays.length; i++) {
+      overlays[i].toggle();
+    }
   }
   if (showingWater) {
-      if (overlay != null) {
-        overlay.setMap(null);
+      if (overlays.length>0) {
+        for (let i = 0; i < overlays.length; i++) {
+          overlays[i].setMap(null);
+        }
+        overlays = []
       }
       showingWater = false
       document.getElementById("toggleWater").innerText = "invert_colors";
@@ -79,39 +84,48 @@ function toggleWaterOverlay() {
       var latLng = map.getCenter();
       var lat = latLng.lat();
       var lng = latLng.lng();
+      const latShift = (0.85/69.1)*2;
+      const lngShift = (0.84/69.1)*2;
+      for (let i = -1; i<2; i++) {
+        for (let j = -1; j<2; j++) {
+          getFloodMap(lat+latShift*i, lng+lngShift*j);
+        }
+      }
       // console.log("LAt, lng:" + lat + ", " +lng)
       // call neural network here to get the image. 
-      fetch("/getFloodMap?lat="+lat+"&lng="+lng).then(response => response.blob()).then(image => {
-        var imageUrl = URL.createObjectURL(image);
-        // document.getElementById("test").src = imageUrl
-        var topLeft = new google.maps.LatLng(lat-(0.85/69.1), lng-(0.84/69.1))
-        var bottomRight = new google.maps.LatLng(lat+(0.85/69.1), lng+(0.84/69.1))
-        var bounds = new google.maps.LatLngBounds(topLeft, bottomRight);
-        overlay = new USGSOverlay(bounds, imageUrl);
-        overlay.setMap(map);
-        map.setZoom(15);
-        showingWater = true;
-        document.getElementById("toggleWater").innerText = "invert_colors_off";
-      });
+      map.setZoom(15);
+      showingWater = true;
+      document.getElementById("toggleWater").innerText = "invert_colors_off";
   }
 }
 
-
+function getFloodMap(lat, lng) {
+  fetch("/getFloodMap?lat="+lat+"&lng="+lng).then(response => response.blob()).then(image => {
+    var imageUrl = URL.createObjectURL(image);
+    // document.getElementById("test").src = imageUrl
+    var topLeft = new google.maps.LatLng(lat-(0.85/69.1), lng-(0.84/69.1))
+    var bottomRight = new google.maps.LatLng(lat+(0.85/69.1), lng+(0.84/69.1))
+    var bounds = new google.maps.LatLngBounds(topLeft, bottomRight);
+    var overlay = new USGSOverlay(bounds, imageUrl);
+    overlay.setMap(map);
+    overlays.push(overlay);
+  });
+}
 
 function setLatLng() {
     const address = document.getElementById("addressSearch").value;
 
     function getLatLng(results, status) {
-        if (status == 'OK') {
-            var lat = results[0].geometry.location.lat();
-            var lng = results[0].geometry.location.lng();
-            // createMarker(results[0].geometry.location);
-            map.setCenter(results[0].geometry.location);
-            console.log("Lat/Long:" + lat + ", " + lng);
-            // toggleWaterOverlay()
-        } else {
-            alert('Geocode was not successful for the following reason: ' + status);
-        }
+      if (status == 'OK') {
+        var lat = results[0].geometry.location.lat();
+        var lng = results[0].geometry.location.lng();
+        // createMarker(results[0].geometry.location);
+        map.setCenter(results[0].geometry.location);
+        console.log("Lat/Long:" + lat + ", " + lng);
+        toggleWaterOverlay()
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
     }
     geocoder.geocode( {'address': address}, getLatLng);
     return false;
@@ -229,13 +243,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("toggleCloud").innerText = "cloud_queue";
     document.getElementById("toggleWater").innerText = "invert_colors";
 
-    instances[0].open();
-
     var elemsDrop = document.querySelectorAll('.dropdown-trigger');
     var instancesDrop = M.Dropdown.init(elemsDrop, {});
 
     var elemsOverlay = document.querySelectorAll('.tooltipped');
-    var instancesOverlay = M.Tooltip.init(elemsOverlay, {});
+    var instancesOverlay = M.Tooltip.init(elemsOverlay, {position: 'left'});
     
 });
 $("#addressForm").submit(function(e) {

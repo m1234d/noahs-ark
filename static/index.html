@@ -30,7 +30,7 @@
 
       <!-- Search Bar -->
       <div class="bar">
-        <form onsubmit="setLatLng()">
+        <form onsubmit="setLatLng()" id="addressForm">
           <img class="searchIcon" src="/static/images/search.png" height="15px">
           <div class="input-field inline">
             <input type="text" id="addressSearch" name="addressSearch" autocomplete="off">
@@ -45,20 +45,13 @@
       <img class="logo" src="/static/images/NoahsArkLogo.png" width="75px" height="75px" style="border-radius: 50%;">
 
       <!-- Overlay button tray -->
-      <div class="fixed-action-btn">
-        <a class="btn-floating btn-large red tooltipped" data-position="left" data-tooltip="Overlays">
-          <i class="large material-icons">menu</i>
-        </a>
-        <ul>
-          <li><a class="btn-floating btn-large blue tooltipped" 
-            data-position="left" data-tooltip="Toggle Flood Map" 
-            onclick="toggleWaterOverlay()">
-            <i class="material-icons" id="toggleWater"></i></a></li>
-          <li><a class="btn-floating btn-large green tooltipped" 
-            data-position="left" data-tooltip="Toggle Weather Map" 
-            onclick="toggleCloudOverlay()">
-            <i class="material-icons" id="toggleCloud"></i></a></li>
-        </ul>
+      <div class="cloud tooltipped" data-position="left" data-tooltip="Toggle Weather Map">
+        <a class="btn-floating btn-large green" onclick="toggleCloudOverlay()">
+            <i class="material-icons" id="toggleCloud"></i></a>
+      </div>
+      <div class="flood tooltipped" data-position="left" data-tooltip="Toggle Flood Map">
+        <a class="btn-floating btn-large blue" onclick="toggleWaterOverlay()">
+            <i class="material-icons" id="toggleWater"></i></a>
       </div>
 
       
