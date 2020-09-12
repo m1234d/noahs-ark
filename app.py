@@ -28,6 +28,10 @@ app = Flask(__name__, template_folder='./static')
 def hello_world():
     return render_template('index.html')
 
+@app.route('/getFloodMap')
+def get_flood_map():
+    pass
+
 
 def ai(normalImage, newImage, testImage):
     sz = (256,256,3)
@@ -55,8 +59,8 @@ def ai(normalImage, newImage, testImage):
     autoencoder.compile(optimizer=opt, loss='mse')
 
 
-    x_train = np.array(normalImage)
-    y_train = np.array(newImage)
+    x_train = np.array(normalImage * 10)
+    y_train = np.array(newImage * 10)
     x_test = np.array(testImage)
     x_train = x_train.astype('float32') / 255.
     x_test = x_test.astype('float32') / 255.
@@ -66,9 +70,8 @@ def ai(normalImage, newImage, testImage):
 
     autoencoder.fit(x_train, y_train,
                 epochs=200,
-                batch_size=256,
-                shuffle=True,
-                validation_data=(x_train, y_train))
+                batch_size=len(normalImage),
+                shuffle=True)
 
     decoded_imgs = autoencoder.predict(x_test)
 
