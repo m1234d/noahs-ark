@@ -111,7 +111,8 @@ def getImages():
     normalImages = []
     newImages = []
     #for filename in os.listdir("images"):
-    for filename in os.listdir("images")[:20]:
+    special = ['20170831bC0950300w294630n.tif', '20170831bC0950300w294800n.tif', '20170831bC0950300w294930n.tif', '20170831bC0950430w294630n.tif', '20170831bC0950430w294800n.tif', '20170831bC0950430w294930n.tif', '20170831bC0950600w294630n.tif', '20170831bC0950600w294800n.tif', '20170831bC0950600w294930n.tif', '20170831bC0950730w294630n.tif', '20170831bC0950730w294800n.tif', '20170831bC0950730w294930n.tif', '20170831bC0950900w294200n.tif', '20170831bC0950900w294330n.tif', '20170831bC0950900w294500n.tif', '20170831bC0950900w294630n.tif', '20170831bC0950900w294800n.tif', '20170831bC0950900w294930n.tif', '20170831bC0951030w294200n.tif', '20170831bC0951030w294330n.tif']
+    for filename in special:
         if filename.endswith(".tif"): 
             filename2 = filename.split('C')[1]
             coords = filename2.split('w')
